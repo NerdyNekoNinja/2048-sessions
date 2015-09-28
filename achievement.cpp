@@ -1,26 +1,44 @@
 #include "achievement.h"
 
+#include <GLFW/glfw3.h>
+#include <map>
+#include <time.h>
 
+enum Achieve
+{
+	ACH_32,
+	ACH_64,
+	ACH_128,
+	ACH_256,
+	ACH_512,
+	ACH_1024,
+	ACH_2048
+};
+
+
+class Achievement::Impl_ : public non_copyable
+{
+public:
+	Board * board_;
+	int lastNumAchieve_;
+	clock_t time_;
+	std::map<int, std::string> tabNameAchieve_;
+	std::map<int, std::string> achievementGet_;
+};
 
 Achievement::Achievement(Board *board):
-	lastNumAchieve(0),
-	board_(board)
+	impl_(new Impl_)
 {
-	tabAchieve[Achieve::ACH_32] = std::make_pair(32, false);
-	tabAchieve[Achieve::ACH_64]   = std::make_pair(64, false);
-	tabAchieve[Achieve::ACH_128]  = std::make_pair(128, false);
-	tabAchieve[Achieve::ACH_256]  = std::make_pair(256, false);
-	tabAchieve[Achieve::ACH_512]  = std::make_pair(512, false);
-	tabAchieve[Achieve::ACH_1024] = std::make_pair(1024, false);
-	tabAchieve[Achieve::ACH_2048] = std::make_pair(2048, false);
+	impl_->tabNameAchieve_[32] = " x86 ";
+	impl_->tabNameAchieve_[64] = " 64 bits ";
+	impl_->tabNameAchieve_[128] = " Almost";
+	impl_->tabNameAchieve_[256] = " Colorfull ! ";
+	impl_->tabNameAchieve_[512] = " Still here ?";
+	impl_->tabNameAchieve_[1024] = " What ?!";
+	impl_->tabNameAchieve_[2048] = " !!! ";
 
-	tabNameAchieve[32] = "32 bits";
-	tabNameAchieve[64] = "64 bits";
-	tabNameAchieve[128] = " Almost";
-	tabNameAchieve[256] = " Colorfull ! ";
-	tabNameAchieve[512] = " Still here ?";
-	tabNameAchieve[1024] = " What ?!";
-	tabNameAchieve[2048] = " !!! ";
+	impl_->lastNumAchieve_ = 0;
+	impl_->board_ = board;
 }
 
 
@@ -28,40 +46,39 @@ Achievement::~Achievement()
 {
 }
 
-void Achievement::CheckBoard()
+void Achievement::checkBoard()
 {
-	for (int i = 0; i <board_->height(); i++)
-		for (int j = 0; j < board_->width(); j++)
-			CheckValue(board_->square(i, j));
+	for (int i = 0; i <impl_->board_->height(); i++)
+		for (int j = 0; j < impl_->board_->width(); j++)
+			checkValue(impl_->board_->square(i, j));
 }
 
-void Achievement::CheckValue(Board::ContentValue value)
+void Achievement::checkValue(Board::ContentValue value)
 {
-	for (std::map<Achieve, std::pair<int, bool>>::iterator it = tabAchieve.begin() ; it != tabAchieve.end() ; it++)
-		if (value == it->second.first && !it->second.second)
-		{
-			it->second.second = true;
-			Popup(it->second.first);
-		}
+	if (impl_->achievementGet_.count(value) == 0 && value >=32 )
+	{
+		impl_->achievementGet_[value] = impl_->tabNameAchieve_[value];
+		initiatePoppup(value);
+	}
 }
 
-void Achievement::Popup(int num)
+void Achievement::initiatePoppup(int num)
 {
-	lastNumAchieve = num;
-	time_ = clock();
+	impl_->lastNumAchieve_ = num;
+	impl_->time_ = clock();
 }
 
 
-void Achievement::PaintEvent(NVGcontext* context, Rect rect)
+void Achievement::paintEvent(NVGcontext* context, Rect rect)
 {
 	Rect textRect(rect);
 	Rect boardRect = rect;
 	float boardMargin = 1;
 	boardRect.addMargin(boardMargin);
 
-	clock_t fading = clock()-time_;
+	clock_t fading = clock()- impl_->time_;
 
-	if (lastNumAchieve > 0)
+	if (impl_->lastNumAchieve_ > 0)
 	{
 
 		// draw the background
@@ -80,7 +97,7 @@ void Achievement::PaintEvent(NVGcontext* context, Rect rect)
 		nvgFill(context);
 
 		// & display the Achievement
-		std::string text(tabNameAchieve[lastNumAchieve]);
+		std::string text(impl_->tabNameAchieve_[impl_->lastNumAchieve_]);
 		nvgBeginPath(context);
 		float x = 0;
 		float y = 0;
@@ -97,6 +114,6 @@ void Achievement::PaintEvent(NVGcontext* context, Rect rect)
 		nvgClosePath(context);
 
 		if (fading >=3000)
-			lastNumAchieve = 0;
+			impl_->lastNumAchieve_ = 0;
 	}
 }

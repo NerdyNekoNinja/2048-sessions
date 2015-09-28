@@ -5,7 +5,7 @@
 #include "boardview.h"
 #include "menu.h"
 #include "nvg.h"
-#include <achievement.h>
+#include "achievement.h"
 #include <GLFW/glfw3.h>
 
 #include <random>
@@ -258,7 +258,7 @@ void Application::Impl_::paintEvent(NVGcontext* context){
 	}
 
 	Rect achieveRect(5.f, boardMaxRect.width - 50.f, 100.f, 40.f);
-	achieve_->PaintEvent(context, achieveRect);
+	achieve_->paintEvent(context, achieveRect);
 
 	nvgEndFrame(context);
 }
@@ -392,7 +392,7 @@ int Application::run()
 
 		impl_->paintEvent(context);
 
-		impl_->achieve_->CheckBoard();
+		impl_->achieve_->checkBoard();
 
 		// Swap buffers
 		glfwSwapBuffers(impl_->window_.get());
