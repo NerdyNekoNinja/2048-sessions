@@ -4,11 +4,11 @@
 #include "nvg.h"
 
 
-class Achievement
+class AchievementManager
 {
 public:
-	Achievement(Board * board);
-	~Achievement();
+	AchievementManager(Board * board);
+	~AchievementManager();
 
 	void checkBoard();
 	void checkValue(Board::ContentValue value);

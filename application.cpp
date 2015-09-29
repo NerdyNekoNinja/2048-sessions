@@ -5,7 +5,7 @@
 #include "boardview.h"
 #include "menu.h"
 #include "nvg.h"
-#include "achievement.h"
+#include "achievementmanager.h"
 #include <GLFW/glfw3.h>
 
 #include <random>
@@ -139,7 +139,7 @@ public:
 	std::unique_ptr<Board> board_;
 	std::unique_ptr<Menu> menu_;
 	std::unique_ptr<BoardView> boardView_;
-	std::unique_ptr<Achievement> achieve_;
+	std::unique_ptr<AchievementManager> achieve_;
 	std::unique_ptr<ScoreManager> scoreManager_;
 
 	AppState AS;
@@ -156,7 +156,7 @@ public:
 Application::Impl_::Impl_():
 	window_(glfwCreateWindow( 300, 300, "2048", NULL, NULL),glfwDestroyWindow),
 	board_(new Board(4,4)),
-	achieve_(new Achievement(board_.get())),
+	achieve_(new AchievementManager(board_.get())),
 	AS(MainMenu)
 {
 }

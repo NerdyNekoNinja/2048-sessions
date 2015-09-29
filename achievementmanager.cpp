@@ -1,4 +1,4 @@
-#include "achievement.h"
+#include "achievementmanager.h"
 
 #include <GLFW/glfw3.h>
 #include <map>
@@ -16,7 +16,7 @@ enum Achieve
 };
 
 
-class Achievement::Impl_ : public non_copyable
+class AchievementManager::Impl_ : public non_copyable
 {
 public:
 	Board * board_;
@@ -26,7 +26,7 @@ public:
 	std::map<int, std::string> achievementGet_;
 };
 
-Achievement::Achievement(Board *board):
+AchievementManager::AchievementManager(Board *board):
 	impl_(new Impl_)
 {
 	impl_->tabNameAchieve_[32] = " x86 ";
@@ -42,18 +42,18 @@ Achievement::Achievement(Board *board):
 }
 
 
-Achievement::~Achievement()
+AchievementManager::~AchievementManager()
 {
 }
 
-void Achievement::checkBoard()
+void AchievementManager::checkBoard()
 {
 	for (int i = 0; i <impl_->board_->height(); i++)
 		for (int j = 0; j < impl_->board_->width(); j++)
 			checkValue(impl_->board_->square(i, j));
 }
 
-void Achievement::checkValue(Board::ContentValue value)
+void AchievementManager::checkValue(Board::ContentValue value)
 {
 	if (impl_->achievementGet_.count(value) == 0 && value >=32 )
 	{
@@ -62,14 +62,14 @@ void Achievement::checkValue(Board::ContentValue value)
 	}
 }
 
-void Achievement::initiatePoppup(int num)
+void AchievementManager::initiatePoppup(int num)
 {
 	impl_->lastNumAchieve_ = num;
 	impl_->time_ = clock();
 }
 
 
-void Achievement::paintEvent(NVGcontext* context, Rect rect)
+void AchievementManager::paintEvent(NVGcontext* context, Rect rect)
 {
 	Rect textRect(rect);
 	Rect boardRect = rect;
