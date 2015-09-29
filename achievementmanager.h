@@ -12,7 +12,7 @@ public:
 
 	void checkBoard();
 	void checkValue(Board::ContentValue value);
-	void initiatePoppup(int num);
+	void initiatePopup(int num);
 	void paintEvent(NVGcontext* context, Rect rect);
 
 private:

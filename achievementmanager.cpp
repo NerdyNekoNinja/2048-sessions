@@ -58,11 +58,11 @@ void AchievementManager::checkValue(Board::ContentValue value)
 	if (impl_->achievementGet_.count(value) == 0 && value >=32 )
 	{
 		impl_->achievementGet_[value] = impl_->tabNameAchieve_[value];
-		initiatePoppup(value);
+		initiatePopup(value);
 	}
 }
 
-void AchievementManager::initiatePoppup(int num)
+void AchievementManager::initiatePopup(int num)
 {
 	impl_->lastNumAchieve_ = num;
 	impl_->time_ = clock();
